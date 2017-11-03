@@ -1,0 +1,5 @@
+*.app
+*xcuserstate
+*.DS_Store
+FaceDetectionForPlants-ofx/build/
+*.orig
