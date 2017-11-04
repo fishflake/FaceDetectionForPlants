@@ -5,6 +5,6 @@
 //========================================================================
 int main( ){
     ofAppGlutWindow window;
-    ofSetupOpenGL(800,600, OF_WINDOW);            // <-------- setup the GL context
+    ofSetupOpenGL(800,800, OF_WINDOW);            // <-------- setup the GL context
     ofRunApp(new ofApp());
 }

@@ -2,6 +2,8 @@
 
 #include "ofMain.h"
 #include "ofxCv.h"
+#include "ofxGui.h"
+
 
 #include "ofxFaceTracker.h"
 
@@ -44,5 +46,14 @@ private:
     
     string buttonState;
     string potValue;
+    
+    //timer stuff
+    float startTime;
+    bool timerEnd;
+
+    
+    ofxPanel gui;
+    ofParameter<float> endTime;
+    
 		
 };

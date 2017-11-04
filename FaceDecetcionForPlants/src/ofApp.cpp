@@ -13,9 +13,16 @@
 using namespace ofxCv;
 
 
+
 //--------------------------------------------------------------
 
 void ofApp::setup() {
+    gui.setup();
+    gui.add(endTime.set("end time", 500.0, 0.0, 500));
+    
+    timerEnd = false;
+    startTime = ofGetElapsedTimeMillis();
+    
     cam.initGrabber(640, 480);
     tracker.setup();
     
@@ -47,6 +54,7 @@ void ofApp::setup() {
 
 //--------------------------------------------------------------
 void ofApp::update() {
+    
     cam.update();
     if(cam.isFrameNew()) {
         tracker.update(toCv(cam));
@@ -54,7 +62,6 @@ void ofApp::update() {
     }
     
     updateArduino();
-    
     
     
     if(tracker.getFound()){
@@ -107,9 +114,9 @@ void ofApp::setupArduino(const int & version) {
     // servo motors can only be attached to pin D3, D5, D6, D9, D10, or D11
     ard.sendServoAttach(9);
     
-    // Listen for changes on the digital and analog pins
-    ofAddListener(ard.EDigitalPinChanged, this, &ofApp::digitalPinChanged);
-    ofAddListener(ard.EAnalogPinChanged, this, &ofApp::analogPinChanged);
+//    // Listen for changes on the digital and analog pins
+//    ofAddListener(ard.EDigitalPinChanged, this, &ofApp::digitalPinChanged);
+//    ofAddListener(ard.EAnalogPinChanged, this, &ofApp::analogPinChanged);
 }
 
 void ofApp::updateArduino(){
@@ -150,18 +157,32 @@ void ofApp::analogPinChanged(const int & pinNum) {
 //--------------------------------------------------------------
 
 void ofApp::draw() {
+    
+    float barWidth = 600;
+    float timer = ofGetElapsedTimeMillis() - startTime;
+    
+    if (timer >= endTime) {
+        timerEnd = true;
+    }
+    
+    float timerBar = ofMap(timer, 0.0, endTime, 0.0, 1.0, true);
+    ofSetColor(100);
+    ofDrawRectangle(0, ofGetWindowHeight()-150, barWidth*timerBar, 30);
+    
+    
+    if(timer >= endTime){
+        timerEnd = false;
+        startTime = ofGetElapsedTimeMillis();
+    }
+    
+    
     ofSetColor(255);
     cam.draw(0, 0);
     ofSetLineWidth(2);
     tracker.draw();
-//        ofPolyline noseBase = tracker.getImageFeature(ofxFaceTracker::NOSE_BASE);
-    //    ofSetColor(ofColor::red);
-    //    noseBase.draw();
-    //    ofDrawCircle(noseBase.getCentroid2D(), 8 * tracker.getScale());
+
     ofDrawBitmapString(ofToString((int) ofGetFrameRate()), 10, 20);
 
-    
-//    Direction faceOrientation = getDirection() const;
     
     ofEnableAlphaBlending();
     ofSetColor(0, 0, 0, 127);
@@ -193,6 +214,9 @@ void ofApp::draw() {
     
     ofDrawBitmapString(orientation, 520, 125);
     
+    gui.draw();
+
+    
 }
 //--------------------------------------------------------------
 
@@ -213,6 +237,11 @@ void ofApp::keyPressed(int key) {
             break;
         default:
             break;
+    }
+    
+    if(key == ' ') {
+        timerEnd = false;
+        startTime = ofGetElapsedTimeMillis();
     }
 }
 
