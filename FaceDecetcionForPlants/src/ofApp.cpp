@@ -16,7 +16,7 @@ using namespace ofxCv;
 //--------------------------------------------------------------
 
 void ofApp::setup() {
-    cam.initGrabber(20, 20);
+    cam.initGrabber(640, 480);
     tracker.setup();
     
     ofSetVerticalSync(true);
@@ -35,7 +35,7 @@ void ofApp::setup() {
     // you can get this from the Arduino application or via command line
     // for OSX, in your terminal type "ls /dev/tty.*" to get a list of serial devices
     //    ard.connect("/dev/tty.usbmodemfd121", 57600);
-    ard.connect("/dev/cu.usbmodem1431", 57600);
+    ard.connect("/dev/cu.usbmodem1421", 57600);
     
     // listen for EInitialized notification. this indicates that
     // the arduino is ready to receive commands and it is safe to
