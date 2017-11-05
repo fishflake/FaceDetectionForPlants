@@ -18,7 +18,7 @@ using namespace ofxCv;
 
 void ofApp::setup() {
     gui.setup();
-    gui.add(endTime.set("end time", 500.0, 0.0, 500));
+    gui.add(endTime.set("end time", 400.0, 0.0, 500));
     
     timerEnd = false;
     startTime = ofGetElapsedTimeMillis();
@@ -42,7 +42,7 @@ void ofApp::setup() {
     // you can get this from the Arduino application or via command line
     // for OSX, in your terminal type "ls /dev/tty.*" to get a list of serial devices
     //    ard.connect("/dev/tty.usbmodemfd121", 57600);
-    ard.connect("/dev/cu.usbmodem1421", 57600);
+    ard.connect("/dev/cu.usbmodem1431", 57600);
     
     // listen for EInitialized notification. this indicates that
     // the arduino is ready to receive commands and it is safe to
@@ -63,16 +63,27 @@ void ofApp::update() {
     
     updateArduino();
     
+   timer = ofGetElapsedTimeMillis() - startTime;
     
-    if(tracker.getFound()){
-        // rotate servo head to 180 degrees
-        ard.sendServo(9, 180, false);
-    }
-    else{
-        // rotate servo head to 0 degrees
-        ard.sendServo(9, 0, false);
-    }
+   /* if (timer >= endTime) {
+        timerEnd = true;
+    }*/
     
+    if(timer >= endTime){
+    
+        if(tracker.getFound()){
+            // rotate servo head to 180 degrees
+            ard.sendServo(9, 180, false);
+        }
+        else{
+            // rotate servo head to 0 degrees
+            ard.sendServo(9, 0, false);
+        }
+        
+        timerEnd = false;
+        startTime = ofGetElapsedTimeMillis();
+    }
+        
     orientation = tracker.getOrientation();
     
 
@@ -159,22 +170,22 @@ void ofApp::analogPinChanged(const int & pinNum) {
 void ofApp::draw() {
     
     float barWidth = 600;
-    float timer = ofGetElapsedTimeMillis() - startTime;
-    
-    if (timer >= endTime) {
-        timerEnd = true;
-    }
+//    float timer = ofGetElapsedTimeMillis() - startTime;
+//
+//    if (timer >= endTime) {
+//        timerEnd = true;
+//    }
     
     float timerBar = ofMap(timer, 0.0, endTime, 0.0, 1.0, true);
     ofSetColor(100);
     ofDrawRectangle(0, ofGetWindowHeight()-150, barWidth*timerBar, 30);
     
     
-    if(timer >= endTime){
-        timerEnd = false;
-        startTime = ofGetElapsedTimeMillis();
-    }
-    
+//    if(timer >= endTime){
+//        timerEnd = false;
+//        startTime = ofGetElapsedTimeMillis();
+//    }
+//
     
     ofSetColor(255);
     cam.draw(0, 0);

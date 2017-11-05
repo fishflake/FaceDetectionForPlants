@@ -48,7 +48,7 @@ private:
     string potValue;
     
     //timer stuff
-    float startTime;
+    float startTime, timer;
     bool timerEnd;
 
     
